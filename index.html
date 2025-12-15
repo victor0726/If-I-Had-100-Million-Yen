@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式日語教材：如果我有1億日元</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', 'Noto Sans JP', sans-serif; }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Fade in animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+
+        /* Ruby (Furigana) Styling */
+        ruby {
+            font-family: 'Noto Sans JP', sans-serif;
+            ruby-align: center;
+        }
+        rt {
+            font-size: 0.6em;
+            color: #6366f1; /* Indigo-500 */
+            user-select: none; /* Prevent selecting furigana text */
+            font-weight: normal;
+        }
+
+        /* Toggle Class to Hide Furigana */
+        body.hide-furigana rt {
+            display: none;
+        }
+
+        /* Aspect Ratio for Iframe */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            background: #000;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Layout adjustments for Split View */
+        @media (min-width: 1024px) {
+            .video-wrapper {
+                padding-bottom: 0;
+                height: 100%;
+            }
+        }
+    </style>
+    <!-- 
+    Changes Log:
+    1. Updated Timestamps (start times) for video examples to capture full sentence context.
+       - ~te mitai: 167 -> 158 (02:38)
+       - ~ni hamatteiru: 293 -> 287 (04:47)
+       - ~te agetai: 651 -> 648 (10:48)
+       - ~dakedenaku: 1334 -> 1326 (22:06)
+    -->
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 py-3 px-4 md:px-6 shadow-sm z-30 flex-shrink-0">
+        <div class="max-w-full mx-auto flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
+            <div class="flex items-center gap-3">
+                <h1 class="text-lg md:text-xl font-bold text-slate-800">🇯🇵 互動日語教室</h1>
+                <span class="hidden md:inline text-xs text-slate-400">|</span>
+                <p class="text-xs text-slate-500 truncate max-w-[150px] md:max-w-none">教材來源：【N4-N3】If I Had 100 Million Yen</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <!-- Furigana Toggle Button -->
+                <button onclick="toggleFurigana()" id="furiganaBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 text-sm font-bold hover:bg-indigo-100 transition shadow-sm whitespace-nowrap">
+                    <span class="text-lg">あ</span>
+                    <span>漢字の読み方を消す</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace (Split Layout) -->
+    <main class="flex-grow flex flex-col lg:flex-row w-full overflow-hidden">
+        
+        <!-- Left Panel: Video Player -->
+        <div class="w-full lg:w-5/12 bg-black flex flex-col z-20 flex-shrink-0 lg:h-full">
+            <div class="video-wrapper lg:h-full">
+                <!-- YouTube Iframe -->
+                <iframe id="yt-player" 
+                    src="https://www.youtube.com/embed/6oQ-NZP1w90?autoplay=1&start=158" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        <!-- Right Panel: Content Area -->
+        <div class="w-full lg:w-7/12 flex flex-col bg-slate-50 lg:h-full border-l border-slate-200 overflow-hidden relative">
+            
+            <!-- Navigation Tabs (Sticky) -->
+            <div class="bg-white/95 backdrop-blur shadow-sm border-b border-slate-200 p-3 z-10 flex-shrink-0">
+                <div id="grammarNav" class="flex flex-wrap gap-2 justify-start">
+                    <!-- Buttons injected by JS -->
+                </div>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div id="contentArea" class="flex-grow overflow-y-auto p-4 md:p-8 scroll-smooth pb-20">
+                <!-- Dynamic Content injected by JS -->
+                <div class="h-full flex flex-col items-center justify-center text-slate-400 space-y-4">
+                    <span class="text-6xl">📖</span>
+                    <p class="text-lg">正在載入課程內容...</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // --- 0. Furigana Control ---
+        function toggleFurigana() {
+            document.body.classList.toggle('hide-furigana');
+            const btn = document.getElementById('furiganaBtn');
+            const isHidden = document.body.classList.contains('hide-furigana');
+            
+            if (isHidden) {
+                btn.innerHTML = `<span class="text-lg">漢</span><span>読み方をつける</span>`;
+                btn.classList.replace('bg-indigo-50', 'bg-slate-100');
+                btn.classList.replace('text-indigo-700', 'text-slate-600');
+                btn.classList.replace('border-indigo-200', 'border-slate-300');
+            } else {
+                btn.innerHTML = `<span class="text-lg">あ</span><span>漢字の読み方を消す</span>`;
+                btn.classList.replace('bg-slate-100', 'bg-indigo-50');
+                btn.classList.replace('text-slate-600', 'text-indigo-700');
+                btn.classList.replace('border-slate-300', 'border-indigo-200');
+            }
+        }
+
+        // --- 1. Video Control Logic ---
+        function playEmbeddedVideo(seconds) {
+            const iframe = document.getElementById('yt-player');
+            const videoId = "6oQ-NZP1w90";
+            const newSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&start=${seconds}`;
+            iframe.src = newSrc;
+        }
+
+        // --- 2. Data Structure ---
+        const grammarPoints = [
+            {
+                id: 1,
+                title: "～てみたい",
+                meaning: { ja: "～してみたい / <ruby>試<rt>ため</rt></ruby>したい", cn: "想嘗試做..." },
+                time: 158, timeStr: "02:38", level: "N4", connection: "動詞て形 ＋ みる ＋ たい",
+                desc: { ja: "「てみる（<ruby>試<rt>ため</rt></ruby>す）」と「たい（<ruby>希望<rt>きぼう</rt></ruby>）」を<ruby>組<rt>く</rt></ruby>み<ruby>合<rt>あ</rt></ruby>わせた<ruby>表現<rt>ひょうげん</rt></ruby>です。", cn: "由「てみる（試著做）」和「たい（想要）」組合而成。" },
+                videoSentence: { ja: "エッフェル<ruby>塔<rt>とう</rt></ruby>の<ruby>様子<rt>ようす</rt></ruby>をまた<ruby>一度<rt>いちど</rt></ruby><span class='text-indigo-600 font-bold'><ruby>見<rt>み</rt></ruby>てみたい</span>なと<ruby>思<rt>おも</rt></ruby>います。", cn: "我想再去<span class='font-bold'>看一次</span>艾菲爾鐵塔的樣子。" },
+                examples: [
+                    { roleA: "どこか<ruby>行<rt>い</rt></ruby>きたい<ruby>国<rt>くに</rt></ruby>はありますか。", roleB_cn: "想去日本看看。", roleB_ja: "<ruby>日本<rt>にほん</rt></ruby>へ<ruby>行<rt>い</rt></ruby>ってみたいです。" }
+                ]
+            },
+            {
+                id: 2,
+                title: "～といえば",
+                meaning: { ja: "～の<ruby>話<rt>はなし</rt></ruby>なら / ～から<ruby>連想<rt>れんそう</rt></ruby>されるのは", cn: "說到...的話" },
+                time: 218, timeStr: "03:38", level: "N3", connection: "名詞 ＋ といえば",
+                desc: { ja: "ある<ruby>話題<rt>わだい</rt></ruby>が<ruby>出<rt>で</rt></ruby>た<ruby>時<rt>とき</rt></ruby>に、<ruby>代表的<rt>だいひょうてき</rt></ruby>なものを<ruby>挙<rt>あ</rt></ruby>げる<ruby>時<rt>とき</rt></ruby>に<ruby>使<rt>つか</rt></ruby>います。", cn: "當提起某個話題，聯想到最具代表性的事物時使用。" },
+                videoSentence: { ja: "イタリア<span class='text-indigo-600 font-bold'>といえば</span><ruby>食<rt>た</rt></ruby>べ<ruby>物<rt>もの</rt></ruby>ですよね。", cn: "說到義大利<span class='font-bold'>的話</span>，就是美食對吧。" },
+                examples: [
+                    { roleA: "もうすぐ<ruby>夏<rt>なつ</rt></ruby>ですね。", roleB_cn: "說到日本的夏天，就是煙火呢。", roleB_ja: "<ruby>日本<rt>にほん</rt></ruby>の<ruby>夏<rt>なつ</rt></ruby>といえば、<ruby>花火<rt>はなび</rt></ruby>ですね。" }
+                ]
+            },
+            {
+                id: 3,
+                title: "～気がします",
+                meaning: { ja: "～ような<ruby>感<rt>かん</rt></ruby>じがする", cn: "覺得...、有...的感覺" },
+                time: 109, timeStr: "01:49", level: "N4", connection: "動詞/形容詞(普通形) ＋ 気がする",
+                desc: { ja: "はっきりとした<ruby>証拠<rt>しょうこ</rt></ruby>はないけれど、<ruby>感覚<rt>かんかく</rt></ruby>として「そう<ruby>思<rt>おも</rt></ruby>う」<ruby>場合<rt>ばあい</rt></ruby>に<ruby>使<rt>つか</rt></ruby>います。", cn: "表示說話者主觀的感覺或推測，非確定的事實。" },
+                videoSentence: { ja: "<ruby>最近<rt>さいきん</rt></ruby>ますます<ruby>高<rt>たか</rt></ruby>くなっている<span class='text-indigo-600 font-bold'><ruby>気<rt>き</rt></ruby>がします</span>。", cn: "總覺得最近價格越來越高了。" },
+                examples: [
+                    { roleA: "<ruby>空<rt>そら</rt></ruby>が<ruby>暗<rt>くら</rt></ruby>いですね。", roleB_cn: "感覺明天會下雨。", roleB_ja: "<ruby>明日<rt>あした</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>が<ruby>降<rt>ふ</rt></ruby>る<ruby>気<rt>き</rt></ruby>がします。" }
+                ]
+            },
+            {
+                id: 4,
+                title: "～たことがある",
+                meaning: { ja: "<ruby>過去<rt>かこ</rt></ruby>の<ruby>経験<rt>けいけん</rt></ruby>", cn: "曾經做過..." },
+                time: 270, timeStr: "04:30", level: "N4", connection: "動詞た形 ＋ ことがある",
+                desc: { ja: "<ruby>過去<rt>かこ</rt></ruby>に<ruby>経験<rt>けいけん</rt></ruby>したことがあることを<ruby>表<rt>あらわ</rt></ruby>す<ruby>文型<rt>ぶんけい</rt></ruby>です。", cn: "表示過去的經驗。是描述經歷的標準句型。" },
+                videoSentence: { ja: "ソウルには4<ruby>回<rt>かい</rt></ruby><span class='text-indigo-600 font-bold'><ruby>行<rt>い</rt></ruby>ったことがあります</span>。", cn: "我曾經去過首爾四次。" },
+                examples: [
+                    { roleA: "<ruby>私<rt>わたし</rt></ruby>は<ruby>日本<rt>にほん</rt></ruby>の<ruby>山<rt>やま</rt></ruby>が<ruby>大好<rt>だいす</rt></ruby>きです。", roleB_cn: "你曾經爬過富士山嗎？", roleB_ja: "<ruby>富士山<rt>ふじさん</rt></ruby>に<ruby>登<rt>のぼ</rt></ruby>ったことがありますか。" }
+                ]
+            },
+            {
+                id: 5,
+                title: "～にはまっている",
+                meaning: { ja: "～に<ruby>夢中<rt>むちゅう</rt></ruby>になっている", cn: "熱衷於...、沉迷於..." },
+                time: 287, timeStr: "04:47", level: "N3", connection: "名詞 ＋ にはまっている",
+                desc: { ja: "<ruby>趣味<rt>しゅみ</rt></ruby>や<ruby>特定<rt>とくてい</rt></ruby>の<ruby>活動<rt>かつどう</rt></ruby>に<ruby>深<rt>ふか</rt></ruby>く<ruby>夢中<rt>むちゅう</rt></ruby>になり、<ruby>抜<rt>ぬ</rt></ruby>け<ruby>出<rt>だ</rt></ruby>せない<ruby>状態<rt>じょうたい</rt></ruby>を<ruby>表<rt>あらわ</rt></ruby>します。", cn: "原意是「吻合、掉入」，引申為「掉進某個愛好坑裡」。" },
+                videoSentence: { ja: "<ruby>子供<rt>こども</rt></ruby>たちもK-POP<span class='text-indigo-600 font-bold'>にはまっている</span>ので...", cn: "因為孩子們也正<span class='font-bold'>沉迷於</span>K-POP..." },
+                examples: [
+                    { roleA: "<ruby>最近<rt>さいきん</rt></ruby>、<ruby>何<rt>なに</rt></ruby>か<ruby>面白<rt>おもしろ</rt></ruby>いことありますか。", roleB_cn: "最近沉迷於遊戲。", roleB_ja: "<ruby>最近<rt>さいきん</rt></ruby>、ゲームにはまっています。" }
+                ]
+            },
+            {
+                id: 6,
+                title: "～てあげたい",
+                meaning: { ja: "<ruby>相手<rt>あいて</rt></ruby>のために～したい", cn: "想為某人做..." },
+                time: 648, timeStr: "10:48", level: "N4", connection: "動詞て形 ＋ あげる",
+                desc: { ja: "<ruby>話<rt>はな</rt></ruby>し<ruby>手<rt>て</rt></ruby>が<ruby>相手<rt>あいて</rt></ruby>のために<ruby>何<rt>なに</rt></ruby>か<ruby>良<rt>よ</rt></ruby>い<ruby>行動<rt>こうどう</rt></ruby>をすることを<ruby>表<rt>あらわ</rt></ruby>します。", cn: "表示說話者為別人做某個動作（帶有給予恩惠的含義）。" },
+                videoSentence: { ja: "ちょっと<ruby>贅沢<rt>ぜいたく</rt></ruby>なバッグを<span class='text-indigo-600 font-bold'><ruby>買<rt>か</rt></ruby>ってあげたい</span>です。", cn: "我想<span class='font-bold'>買</span>一個稍微奢侈的包包<span class='font-bold'>給她</span>。" },
+                examples: [
+                    { roleA: "<ruby>昨日<rt>きのう</rt></ruby>、<ruby>何<rt>なに</rt></ruby>をしましたか。", roleB_cn: "我教了朋友日文。", roleB_ja: "<ruby>友達<rt>ともだち</rt></ruby>に<ruby>日本語<rt>にほんご</rt></ruby>を<ruby>教<rt>おし</rt></ruby>えてあげました。" }
+                ]
+            },
+            {
+                id: 7,
+                title: "～だけでなく",
+                meaning: { ja: "～だけじゃなくて", cn: "不僅...而且..." },
+                time: 1326, timeStr: "22:06", level: "N3", connection: "名詞/普通形 ＋ だけでなく",
+                desc: { ja: "<ruby>前<rt>まえ</rt></ruby>のものに<ruby>限<rt>かぎ</rt></ruby>らず、<ruby>後<rt>うし</rt></ruby>ろのものも<ruby>含<rt>ふく</rt></ruby>まれることを<ruby>表<rt>あらわ</rt></ruby>します。", cn: "表示不只限於前者，還包含後者。" },
+                videoSentence: { ja: "<ruby>自分<rt>じぶん</rt></ruby>のため<span class='text-indigo-600 font-bold'>だけでなく</span>て、<ruby>人<rt>ひと</rt></ruby>のためにも<ruby>使<rt>つか</rt></ruby>えます。", cn: "不僅是為了自己，也能為了他人使用。" },
+                examples: [
+                    { roleA: "すごいですね、<ruby>何<rt>なに</rt></ruby><ruby>語<rt>ご</rt></ruby>が<ruby>話<rt>はな</rt></ruby>せますか。", roleB_cn: "不只英語，也會說中文。", roleB_ja: "<ruby>英語<rt>えいご</rt></ruby>だけでなく、<ruby>中国語<rt>ちゅうごくご</rt></ruby>も<ruby>話<rt>はな</rt></ruby>せます。" }
+                ]
+            }
+        ];
+
+        // --- 3. Quiz Data (Updated to Step-by-Step and Fixed Star Format) ---
+        const quizQuestions = [
+            {
+                type: 'choice',
+                q: "1. 想要表達「雖然沒去過，但**想去**法國**看看**」，應該使用哪個句型？",
+                options: ["フランスへ行ってみたいです。", "フランスへ行ってみます。", "フランスへ行きたいです。", "フランスへ行ったことがあります。"],
+                ans: 0,
+                expl: "正確。這是「～てみたい（想嘗試做...）」的用法，表示想體驗某種未做過的動作。"
+            },
+            {
+                type: 'choice',
+                q: "2. 朋友提到義大利，你想回應「**說到**義大利**的話**，就是披薩呢」，該怎麼說？",
+                options: ["イタリアについて、ピザですね。", "イタリアとして、ピザですね。", "イタリアといえば、ピザですね。", "イタリアにとって、ピザですね。"],
+                ans: 2,
+                expl: "正確。「～といえば」用於提起話題中最具代表性的事物。"
+            },
+            {
+                type: 'choice',
+                q: "3. 「覺得今天好像會下雨。」（憑感覺推測）",
+                options: ["今日は雨が降るそうです。", "今日は雨が降るつもりです。", "今日は雨が降る気がします。", "今日は雨が降るはずです。"],
+                ans: 2,
+                expl: "正確。「～気がします」用於表達憑直覺或感覺做出的推測。"
+            },
+            {
+                type: 'choice',
+                q: "4. 「我**曾經**爬過富士山。」",
+                options: ["富士山に登ったことがあります。", "富士山に登ることがあります。", "富士山に登ってことがあります。", "富士山に登りたいことがあります。"],
+                ans: 0,
+                expl: "正確。表達過去的經驗使用「た形 ＋ ことがある」。"
+            },
+            {
+                type: 'choice',
+                q: "5. 「最近**沉迷於**手機遊戲。」",
+                options: ["最近、スマホゲームに興味があります。", "最近、スマホゲームにはまっています。", "最近、スマホゲームが好きです。", "最近、スマホゲームをはじめました。"],
+                ans: 1,
+                expl: "正確。「～にはまっている」形象地表達了掉進坑裡、熱衷於某事的狀態。"
+            },
+            {
+                type: 'choice',
+                q: "6. 我想買手錶**送給**爸爸。",
+                options: ["父に時計を買いたいです。", "父に時計を買ってもらいたいです。", "父に時計を買ってくれたいです。", "父に時計を買ってあげたいです。"],
+                ans: 3,
+                expl: "正確。「～てあげたい」表示我想為對方做某事（給予）。"
+            },
+            {
+                type: 'choice',
+                q: "7. 「這家店**不只**便宜，**而且**味道也好。」",
+                options: ["安いしか", "安いばかり", "安いだけでなく", "安いほど"],
+                ans: 2,
+                expl: "正確。「～だけでなく」表示「不僅...」，後句通常會接「也（も）...」。"
+            },
+            {
+                type: 'choice',
+                q: "8. 關於「～てあげる」的描述，何者正確？",
+                options: ["只能對自己使用", "對長輩使用可能會失禮", "必須接動詞辭書形", "表示別人為我做"],
+                ans: 1,
+                expl: "正確。因為帶有「施恩」的語氣，直接對長輩使用可能會不禮貌。"
+            },
+            // Updated JLPT Star Questions to exact format
+            {
+                type: 'star',
+                q: "9. 請重組句子，並選出 <span class='text-yellow-500 text-xl'>★</span> 處的選項。<br>私は　＿＿　＿＿　<span class='text-yellow-500 text-xl'>★</span>　＿＿　と思います。（我想再去吃一次那家店的拉麵。）",
+                options: ["食べて", "あの店のラーメンを", "たい", "み"], // 1. 食べて, 2. あの店のラーメンを, 3. たい, 4. み (Original Indices)
+                // Correct Order: 
+                // 1. あの店のラーメンを (Option Index 1)
+                // 2. 食べて (Option Index 0)
+                // 3. み (Option Index 3) -> STAR
+                // 4. たい (Option Index 2)
+                ans: 3, // "み" is the correct answer for the star position
+                expl: "正確順序：私は [あの店のラーメンを] [食べて] [<b>み</b>] [たい] と思います。<br>（私は　2　1　★4　3　と思います）<br>文法：～てみたい（想嘗試做）。"
+            },
+            {
+                type: 'star',
+                q: "10. 請重組句子，並選出 <span class='text-yellow-500 text-xl'>★</span> 處的選項。<br>この店は　＿＿　＿＿　<span class='text-yellow-500 text-xl'>★</span>　＿＿　いいです。（這家店不只便宜，味道也好。）",
+                options: ["だけでなく", "味", "も", "安い"], // 1. だけでなく, 2. 味, 3. も, 4. 安い
+                // Correct Order: 
+                // 1. 安い (Option Index 3)
+                // 2. だけでなく (Option Index 0)
+                // 3. 味 (Option Index 1) -> STAR
+                // 4. も (Option Index 2)
+                ans: 1, // "味" is the correct answer for the star position
+                expl: "正確順序：この店は [安い] [だけでなく] [<b>味</b>] [も] いいです。<br>（この店は　4　1　★2　3　いいです）<br>文法：名詞/形容詞＋だけでなく。"
+            }
+        ];
+
+        // --- 4. UI Control Functions ---
+        
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+
+        function renderNav() {
+            const nav = document.getElementById('grammarNav');
+            nav.innerHTML = '';
+            
+            grammarPoints.forEach((item, index) => {
+                const btn = document.createElement('button');
+                btn.className = `flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 whitespace-nowrap ${index === 0 ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:bg-indigo-50 hover:border-indigo-200'}`;
+                btn.textContent = item.title;
+                btn.dataset.id = item.id;
+                btn.onclick = () => loadContent(item.id);
+                nav.appendChild(btn);
+            });
+
+            const quizBtn = document.createElement('button');
+            quizBtn.className = "flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-bold transition-all duration-200 whitespace-nowrap bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200 ml-2";
+            quizBtn.innerHTML = "📝 課後測驗";
+            quizBtn.dataset.id = "quiz";
+            quizBtn.onclick = () => initQuiz();
+            nav.appendChild(quizBtn);
+
+            loadContent(grammarPoints[0].id);
+        }
+
+        function updateNavState(activeId) {
+            document.querySelectorAll('#grammarNav button').forEach(btn => {
+                const isQuiz = btn.dataset.id === "quiz";
+                
+                if((isQuiz && activeId === "quiz") || parseInt(btn.dataset.id) === activeId) {
+                    if (isQuiz) {
+                        btn.className = 'flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-bold transition-all duration-200 whitespace-nowrap bg-amber-500 text-white border-amber-600 shadow-md ml-2';
+                    } else {
+                        btn.className = 'flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 whitespace-nowrap bg-indigo-600 text-white border-indigo-600 shadow-md';
+                    }
+                } else {
+                    if (isQuiz) {
+                        btn.className = 'flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-bold transition-all duration-200 whitespace-nowrap bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 ml-2';
+                    } else {
+                        btn.className = 'flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 whitespace-nowrap bg-white text-slate-600 border-slate-200 hover:bg-indigo-50 hover:border-indigo-200';
+                    }
+                }
+            });
+        }
+
+        function toggleTrans(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.classList.toggle('hidden');
+                el.classList.toggle('animate-fade-in-up');
+            }
+        }
+
+        function loadContent(id) {
+            updateNavState(id);
+            const data = grammarPoints.find(g => g.id === id);
+            const container = document.getElementById('contentArea');
+            
+            container.innerHTML = `
+                <div class="animate-fade-in-up max-w-3xl mx-auto">
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-4">
+                        <h2 class="text-3xl font-bold text-slate-800">${data.title}</h2>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-600 text-sm font-bold rounded-full border border-slate-200">${data.level}</span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-xl text-indigo-700 font-bold mb-1">${data.meaning.ja}</p>
+                        <button onclick="toggleTrans('meaning-cn-${data.id}')" class="text-xs bg-indigo-50 text-indigo-500 px-2 py-1 rounded hover:bg-indigo-100 transition">🇨🇳 中文翻譯</button>
+                        <p id="meaning-cn-${data.id}" class="hidden text-slate-500 text-base mt-1 pl-1 border-l-2 border-indigo-200">${data.meaning.cn}</p>
+                    </div>
+                    
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100 mb-6 font-mono text-sm text-indigo-800 flex items-start gap-2">
+                        <span class="font-bold">🔗 接續：</span>
+                        <span>${data.connection}</span>
+                    </div>
+
+                    <div class="mb-8 relative">
+                        <p class="text-slate-800 text-lg leading-relaxed font-medium">${data.desc.ja}</p>
+                        <button onclick="toggleTrans('desc-cn-${data.id}')" class="mt-2 text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded hover:bg-slate-200 transition">🇨🇳 中文解說</button>
+                        <p id="desc-cn-${data.id}" class="hidden mt-3 text-slate-600 text-base bg-slate-50 p-4 rounded border border-slate-200 leading-relaxed">${data.desc.cn}</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm mb-8 ring-1 ring-slate-100">
+                        <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
+                            <span class="text-slate-700 font-bold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                影片例句
+                            </span>
+                            <span class="text-slate-400 text-xs font-mono bg-white px-2 py-1 rounded border border-slate-200">時間碼: ${data.timeStr}</span>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-2xl mb-3 font-jp text-slate-800 font-medium">${data.videoSentence.ja}</p>
+                            <p class="text-slate-500 mb-6">${data.videoSentence.cn}</p>
+                            
+                            <button onclick="playEmbeddedVideo(${data.time})" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                                </svg>
+                                播放影片例句
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2 text-lg">
+                            <span>✏️ 應用練習 (情境對話)</span>
+                        </h3>
+                        <div class="space-y-4">
+                            ${data.examples.map((ex, i) => `
+                                <div class="bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 rounded-xl p-5 transition-all shadow-sm">
+                                    <div class="flex items-start gap-3 mb-4">
+                                        <span class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold shadow-sm">A</span>
+                                        <p class="text-lg text-slate-700 font-jp mt-0.5 leading-relaxed">${ex.roleA}</p>
+                                    </div>
+                                    <div class="group cursor-pointer" onclick="this.querySelector('.translation').classList.toggle('hidden'); this.querySelector('.hint-text').classList.toggle('hidden');">
+                                        <div class="flex items-start gap-3">
+                                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold shadow-sm">B</span>
+                                            <div class="flex-grow">
+                                                <div class="mb-2 mt-0.5">
+                                                    <p class="text-lg text-slate-800 font-medium">${ex.roleB_cn}</p>
+                                                </div>
+                                                <div class="hint-text text-sm text-indigo-500 mt-2 flex items-center gap-1">
+                                                    <span>👁️ 點擊查看 B 的日文回答</span>
+                                                </div>
+                                                <div class="translation hidden mt-3 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                                                    <p class="font-jp text-xl text-indigo-700 font-bold">${ex.roleB_ja}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- NEW QUIZ LOGIC (Step-by-Step) ---
+        function initQuiz() {
+            updateNavState('quiz');
+            currentQuizIndex = 0;
+            quizScore = 0;
+            renderQuizStep();
+        }
+
+        function renderQuizStep() {
+            const container = document.getElementById('contentArea');
+            const q = quizQuestions[currentQuizIndex];
+            const isLast = currentQuizIndex === quizQuestions.length - 1;
+
+            container.innerHTML = `
+                <div class="animate-fade-in-up max-w-2xl mx-auto py-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-slate-800">📝 課後測驗</h2>
+                        <span class="text-sm font-bold bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full">第 ${currentQuizIndex + 1} / ${quizQuestions.length} 題</span>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="font-bold text-lg text-slate-800 mb-6 leading-relaxed">${q.q}</p>
+                        <div class="space-y-3 mb-6">
+                            ${q.options.map((opt, optIdx) => `
+                                <label class="flex items-center p-4 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50 hover:border-indigo-300 transition select-none group" onclick="document.getElementById('quiz-feedback').classList.add('hidden')">
+                                    <input type="radio" name="currentQ" value="${optIdx}" class="w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                                    <span class="ml-3 text-slate-700 font-jp text-lg group-hover:text-indigo-700"><span class="font-bold mr-2 text-slate-400">${optIdx + 1}.</span> ${opt}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                        
+                        <div id="quiz-feedback" class="hidden p-4 rounded-lg bg-white border mb-6 text-sm animate-fade-in-up"></div>
+
+                        <button id="submitBtn" onclick="checkCurrentAnswer()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md transition transform hover:-translate-y-0.5 text-lg">
+                            提交答案
+                        </button>
+                        
+                        <button id="nextBtn" onclick="nextQuestion()" class="hidden w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl shadow-md transition transform hover:-translate-y-0.5 text-lg flex items-center justify-center gap-2">
+                            ${isLast ? '查看結果' : '下一題'} <span class="text-xl">→</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkCurrentAnswer() {
+            const selected = document.querySelector('input[name="currentQ"]:checked');
+            const feedbackEl = document.getElementById('quiz-feedback');
+            const submitBtn = document.getElementById('submitBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const q = quizQuestions[currentQuizIndex];
+
+            if (!selected) {
+                feedbackEl.innerHTML = `<div class="flex items-center gap-2 font-bold"><span class="text-xl">⚠️</span> 請先選擇一個答案！</div>`;
+                feedbackEl.className = "p-4 rounded-lg border mb-6 text-base bg-amber-50 border-amber-200 text-amber-800 animate-fade-in-up shadow-sm";
+                feedbackEl.classList.remove('hidden');
+                return;
+            }
+
+            // Disable inputs
+            document.querySelectorAll('input[name="currentQ"]').forEach(el => el.disabled = true);
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+            feedbackEl.classList.remove('hidden');
+
+            const val = parseInt(selected.value);
+            if (val === q.ans) {
+                quizScore++;
+                feedbackEl.className = "p-5 rounded-lg border mb-6 text-base bg-green-50 border-green-200 text-green-800";
+                feedbackEl.innerHTML = `<div class="flex items-center gap-2 font-bold text-lg mb-2"><span class="text-2xl">✅</span> 正確！</div>${q.expl}`;
+            } else {
+                feedbackEl.className = "p-5 rounded-lg border mb-6 text-base bg-red-50 border-red-200 text-red-800";
+                feedbackEl.innerHTML = `<div class="flex items-center gap-2 font-bold text-lg mb-2"><span class="text-2xl">❌</span> 錯誤</div>正確答案是：<span class="font-bold">${q.options[q.ans]}</span><br><br>${q.expl}`;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuizIndex < quizQuestions.length - 1) {
+                currentQuizIndex++;
+                renderQuizStep();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            const container = document.getElementById('contentArea');
+            container.innerHTML = `
+                <div class="animate-fade-in-up max-w-xl mx-auto py-12 text-center">
+                    <div class="mb-6">
+                        <span class="text-6xl">${quizScore === 10 ? '🏆' : quizScore >= 6 ? '🎉' : '📚'}</span>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-4">測驗完成！</h2>
+                    <p class="text-slate-600 mb-8">您的得分是：</p>
+                    
+                    <div class="text-6xl font-black ${quizScore === 10 ? 'text-green-500' : 'text-indigo-600'} mb-8">
+                        ${quizScore} <span class="text-2xl text-slate-400 font-normal">/ ${quizQuestions.length}</span>
+                    </div>
+
+                    <p class="text-lg text-slate-700 mb-8 font-medium">
+                        ${quizScore === 10 ? '太厲害了！全部答對！完美的表現！' : quizScore >= 6 ? '表現不錯！再接再厲！' : '別灰心，多複習幾次影片例句吧！'}
+                    </p>
+
+                    <button onclick="initQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-1">
+                        🔄 再測驗一次
+                    </button>
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderNav();
+        });
+
+    </script>
+</body>
+</html>
