@@ -249,83 +249,136 @@
             {
                 type: 'choice',
                 q: "1. 想要表達「雖然沒去過，但**想去**法國**看看**」，應該使用哪個句型？",
-                options: ["フランスへ行ってみたいです。", "フランスへ行ってみます。", "フランスへ行きたいです。", "フランスへ行ったことがあります。"],
+                options: [
+                    "フランスへ<ruby>行<rt>い</rt></ruby>ってみたいです。", 
+                    "フランスへ<ruby>行<rt>い</rt></ruby>ってみます。", 
+                    "フランスへ<ruby>行<rt>い</rt></ruby>きたいです。", 
+                    "フランスへ<ruby>行<rt>い</rt></ruby>ったことがあります。"
+                ],
                 ans: 0,
-                expl: "正確。這是「～てみたい（想嘗試做...）」的用法，表示想體驗某種未做過的動作。"
+                expl: `<div class="mb-2"><span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>です。「～てみたい」は、まだしたことがないことを<ruby>経験<rt>けいけん</rt></ruby>したい<ruby>時<rt>とき</rt></ruby>に<ruby>使<rt>つか</rt></ruby>う<ruby>表現<rt>ひょうげん</rt></ruby>です。</div>
+                       <div class="pt-2 border-t border-slate-200"><span class="font-bold text-slate-500 block mb-1">【中】</span>正確。這是「～てみたい（想嘗試做...）」的用法，表示想體驗某種未做過的動作。</div>`
             },
             {
                 type: 'choice',
                 q: "2. 朋友提到義大利，你想回應「**說到**義大利**的話**，就是披薩呢」，該怎麼說？",
-                options: ["イタリアについて、ピザですね。", "イタリアとして、ピザですね。", "イタリアといえば、ピザですね。", "イタリアにとって、ピザですね。"],
+                options: [
+                    "イタリアについて、ピザですね。", 
+                    "イタリアとして、ピザですね。", 
+                    "イタリアといえば、ピザですね。", 
+                    "イタリアにとって、ピザですね。"
+                ],
                 ans: 2,
-                expl: "正確。「～といえば」用於提起話題中最具代表性的事物。"
+                expl: `<div class="mb-2"><span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>です。「～といえば」は、<ruby>話題<rt>わだい</rt></ruby>から<ruby>連想<rt>れんそう</rt></ruby>される<ruby>代表的<rt>だいひょうてき</rt></ruby>なものを<ruby>挙<rt>あ</rt></ruby>げる<ruby>時<rt>とき</rt></ruby>に<ruby>使<rt>つか</rt></ruby>います。</div>
+                       <div class="pt-2 border-t border-slate-200"><span class="font-bold text-slate-500 block mb-1">【中】</span>正確。「～といえば」用於提起話題中最具代表性的事物。</div>`
             },
             {
                 type: 'choice',
                 q: "3. 「覺得今天好像會下雨。」（憑感覺推測）",
-                options: ["今日は雨が降るそうです。", "今日は雨が降るつもりです。", "今日は雨が降る気がします。", "今日は雨が降るはずです。"],
+                options: [
+                    "<ruby>今日<rt>きょう</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>が<ruby>降<rt>ふ</rt></ruby>るそうです。", 
+                    "<ruby>今日<rt>きょう</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>が<ruby>降<rt>ふ</rt></ruby>るつもりです。", 
+                    "<ruby>今日<rt>きょう</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>が<ruby>降<rt>ふ</rt></ruby>る<ruby>気<rt>き</rt></ruby>がします。", 
+                    "<ruby>今日<rt>きょう</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>が<ruby>降<rt>ふ</rt></ruby>るはずです。"
+                ],
                 ans: 2,
-                expl: "正確。「～気がします」用於表達憑直覺或感覺做出的推測。"
+                expl: `<div class="mb-2"><span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>です。「～<ruby>気<rt>き</rt></ruby>がします」は、はっきりとした<ruby>証拠<rt>しょうこ</rt></ruby>はないけれど、<ruby>直感<rt>ちょっかん</rt></ruby>や<ruby>感覚<rt>かんかく</rt></ruby>で<ruby>推測<rt>すいそく</rt></ruby>する<ruby>時<rt>とき</rt></ruby>に<ruby>使<rt>つか</rt></ruby>います。</div>
+                       <div class="pt-2 border-t border-slate-200"><span class="font-bold text-slate-500 block mb-1">【中】</span>正確。「～気がします」用於表達憑直覺或感覺做出的推測。</div>`
             },
             {
                 type: 'choice',
                 q: "4. 「我**曾經**爬過富士山。」",
-                options: ["富士山に登ったことがあります。", "富士山に登ることがあります。", "富士山に登ってことがあります。", "富士山に登りたいことがあります。"],
+                options: [
+                    "<ruby>富士山<rt>ふじさん</rt></ruby>に<ruby>登<rt>のぼ</rt></ruby>ったことがあります。", 
+                    "<ruby>富士山<rt>ふじさん</rt></ruby>に<ruby>登<rt>のぼ</rt></ruby>ることがあります。", 
+                    "<ruby>富士山<rt>ふじさん</rt></ruby>に<ruby>登<rt>のぼ</rt></ruby>ってことがあります。", 
+                    "<ruby>富士山<rt>ふじさん</rt></ruby>に<ruby>登<rt>のぼ</rt></ruby>りたいことがあります。"
+                ],
                 ans: 0,
-                expl: "正確。表達過去的經驗使用「た形 ＋ ことがある」。"
+                expl: `<div class="mb-2"><span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>です。<ruby>過去<rt>かこ</rt></ruby>の<ruby>経験<rt>けいけん</rt></ruby>を<ruby>表<rt>あらわ</rt></ruby>す<ruby>時<rt>とき</rt></ruby>は「た<ruby>形<rt>けい</rt></ruby>＋ことがある」を<ruby>使<rt>つか</rt></ruby>います。</div>
+                       <div class="pt-2 border-t border-slate-200"><span class="font-bold text-slate-500 block mb-1">【中】</span>正確。表達過去的經驗使用「た形 ＋ ことがある」。</div>`
             },
             {
                 type: 'choice',
                 q: "5. 「最近**沉迷於**手機遊戲。」",
-                options: ["最近、スマホゲームに興味があります。", "最近、スマホゲームにはまっています。", "最近、スマホゲームが好きです。", "最近、スマホゲームをはじめました。"],
+                options: [
+                    "<ruby>最近<rt>さいきん</rt></ruby>、スマホゲームに<ruby>興味<rt>きょうみ</rt></ruby>があります。", 
+                    "<ruby>最近<rt>さいきん</rt></ruby>、スマホゲームにはまっています。", 
+                    "<ruby>最近<rt>さいきん</rt></ruby>、スマホゲームが<ruby>好<rt>す</rt></ruby>きです。", 
+                    "<ruby>最近<rt>さいきん</rt></ruby>、スマホゲームをはじめました。"
+                ],
                 ans: 1,
-                expl: "正確。「～にはまっている」形象地表達了掉進坑裡、熱衷於某事的狀態。"
+                expl: `<div class="mb-2"><span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>です。「～にはまっている」は、<ruby>何<rt>なに</rt></ruby>かに<ruby>夢中<rt>むちゅう</rt></ruby>になっている<ruby>状態<rt>じょうたい</rt></ruby>を<ruby>表<rt>あらわ</rt></ruby>します。</div>
+                       <div class="pt-2 border-t border-slate-200"><span class="font-bold text-slate-500 block mb-1">【中】</span>正確。「～にはまっている」形象地表達了掉進坑裡、熱衷於某事的狀態。</div>`
             },
             {
                 type: 'choice',
                 q: "6. 我想買手錶**送給**爸爸。",
-                options: ["父に時計を買いたいです。", "父に時計を買ってもらいたいです。", "父に時計を買ってくれたいです。", "父に時計を買ってあげたいです。"],
+                options: [
+                    "<ruby>父<rt>ちち</rt></ruby>に<ruby>時計<rt>とけい</rt></ruby>を<ruby>買<rt>か</rt></ruby>いたいです。", 
+                    "<ruby>父<rt>ちち</rt></ruby>に<ruby>時計<rt>とけい</rt></ruby>を<ruby>買<rt>か</rt></ruby>ってもらいたいです。", 
+                    "<ruby>父<rt>ちち</rt></ruby>に<ruby>時計<rt>とけい</rt></ruby>を<ruby>買<rt>か</rt></ruby>ってくれたいです。", 
+                    "<ruby>父<rt>ちち</rt></ruby>に<ruby>時計<rt>とけい</rt></ruby>を<ruby>買<rt>か</rt></ruby>ってあげたいです。"
+                ],
                 ans: 3,
-                expl: "正確。「～てあげたい」表示我想為對方做某事（給予）。"
+                expl: `<div class="mb-2"><span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>です。「～てあげたい」は、<ruby>相手<rt>あいて</rt></ruby>のために<ruby>何<rt>なに</rt></ruby>かをしてあげたい（<ruby>与<rt>あた</rt></ruby>える）という<ruby>気<rt>き</rt></ruby><ruby>持<rt>も</rt></ruby>ちを<ruby>表<rt>あらわ</rt></ruby>します。</div>
+                       <div class="pt-2 border-t border-slate-200"><span class="font-bold text-slate-500 block mb-1">【中】</span>正確。「～てあげたい」表示我想為對方做某事（給予）。</div>`
             },
             {
                 type: 'choice',
                 q: "7. 「這家店**不只**便宜，**而且**味道也好。」",
-                options: ["安いしか", "安いばかり", "安いだけでなく", "安いほど"],
+                options: [
+                    "<ruby>安<rt>やす</rt></ruby>いしか", 
+                    "<ruby>安<rt>やす</rt></ruby>いばかり", 
+                    "<ruby>安<rt>やす</rt></ruby>いだけでなく", 
+                    "<ruby>安<rt>やす</rt></ruby>いほど"
+                ],
                 ans: 2,
-                expl: "正確。「～だけでなく」表示「不僅...」，後句通常會接「也（も）...」。"
+                expl: `<div class="mb-2"><span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>です。「～だけでなく」は「～だけじゃなくて」という<ruby>意味<rt>いみ</rt></ruby>で、<ruby>後<rt>うし</rt></ruby>ろの<ruby>文<rt>ぶん</rt></ruby>にはよく「も」が<ruby>続<rt>つづ</rt></ruby>きます。</div>
+                       <div class="pt-2 border-t border-slate-200"><span class="font-bold text-slate-500 block mb-1">【中】</span>正確。「～だけでなく」表示「不僅...」，後句通常會接「也（も）...」。</div>`
             },
             {
                 type: 'choice',
                 q: "8. 關於「～てあげる」的描述，何者正確？",
                 options: ["只能對自己使用", "對長輩使用可能會失禮", "必須接動詞辭書形", "表示別人為我做"],
                 ans: 1,
-                expl: "正確。因為帶有「施恩」的語氣，直接對長輩使用可能會不禮貌。"
+                expl: `<div class="mb-2"><span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>です。<ruby>恩<rt>おん</rt></ruby><ruby>着<rt>き</rt></ruby>せがましく<ruby>聞<rt>き</rt></ruby>こえることがあるため、<ruby>目上<rt>めうえ</rt></ruby>の<ruby>人<rt>ひと</rt></ruby>に<ruby>直接<rt>ちょくせつ</rt></ruby><ruby>使<rt>つか</rt></ruby>うと<ruby>失礼<rt>しつれい</rt></ruby>になる<ruby>可能性<rt>かのうせい</rt></ruby>があります。</div>
+                       <div class="pt-2 border-t border-slate-200"><span class="font-bold text-slate-500 block mb-1">【中】</span>正確。因為帶有「施恩」的語氣，直接對長輩使用可能會不禮貌。</div>`
             },
-            // Updated JLPT Star Questions to exact format
+            // Updated JLPT Star Questions to exact format with bilingual explanation
             {
                 type: 'star',
-                q: "9. 請重組句子，並選出 <span class='text-yellow-500 text-xl'>★</span> 處的選項。<br>私は　＿＿　＿＿　<span class='text-yellow-500 text-xl'>★</span>　＿＿　と思います。（我想再去吃一次那家店的拉麵。）",
-                options: ["食べて", "あの店のラーメンを", "たい", "み"], // 1. 食べて, 2. あの店のラーメンを, 3. たい, 4. み (Original Indices)
-                // Correct Order: 
-                // 1. あの店のラーメンを (Option Index 1)
-                // 2. 食べて (Option Index 0)
-                // 3. み (Option Index 3) -> STAR
-                // 4. たい (Option Index 2)
-                ans: 3, // "み" is the correct answer for the star position
-                expl: "正確順序：私は [あの店のラーメンを] [食べて] [<b>み</b>] [たい] と思います。<br>（私は　2　1　★4　3　と思います）<br>文法：～てみたい（想嘗試做）。"
+                q: "9. 請重組句子，並選出 <span class='text-yellow-500 text-xl'>★</span> 處的選項。<br><ruby>私<rt>わたし</rt></ruby>は　＿＿　＿＿　<span class='text-yellow-500 text-xl'>★</span>　＿＿　と<ruby>思<rt>おも</rt></ruby>います。（我想再去吃一次那家店的拉麵。）",
+                options: [
+                    "<ruby>食<rt>た</rt></ruby>べて", 
+                    "あの<ruby>店<rt>みせ</rt></ruby>のラーメンを", 
+                    "たい", 
+                    "み"
+                ], 
+                ans: 3, 
+                expl: `<div class="mb-2">
+                        <span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>の<ruby>順序<rt>じゅんじょ</rt></ruby>：<ruby>私<rt>わたし</rt></ruby>は [あの<ruby>店<rt>みせ</rt></ruby>のラーメンを] [<ruby>食<rt>た</rt></ruby>べて] [<b class="text-red-500">み</b>] [たい] と<ruby>思<rt>おも</rt></ruby>います。<br>（<ruby>文法<rt>ぶんぽう</rt></ruby>：～てみたい）
+                       </div>
+                       <div class="pt-2 border-t border-slate-200">
+                        <span class="font-bold text-slate-500 block mb-1">【中】</span>正確順序：私は [あの店のラーメンを] [食べて] [<b class="text-red-500">み</b>] [たい] と思います。<br>（私は　2　1　★4　3　と思います）<br>文法：～てみたい（想嘗試做）。
+                       </div>`
             },
             {
                 type: 'star',
-                q: "10. 請重組句子，並選出 <span class='text-yellow-500 text-xl'>★</span> 處的選項。<br>この店は　＿＿　＿＿　<span class='text-yellow-500 text-xl'>★</span>　＿＿　いいです。（這家店不只便宜，味道也好。）",
-                options: ["だけでなく", "味", "も", "安い"], // 1. だけでなく, 2. 味, 3. も, 4. 安い
-                // Correct Order: 
-                // 1. 安い (Option Index 3)
-                // 2. だけでなく (Option Index 0)
-                // 3. 味 (Option Index 1) -> STAR
-                // 4. も (Option Index 2)
-                ans: 1, // "味" is the correct answer for the star position
-                expl: "正確順序：この店は [安い] [だけでなく] [<b>味</b>] [も] いいです。<br>（この店は　4　1　★2　3　いいです）<br>文法：名詞/形容詞＋だけでなく。"
+                q: "10. 請重組句子，並選出 <span class='text-yellow-500 text-xl'>★</span> 處的選項。<br>この<ruby>店<rt>みせ</rt></ruby>は　＿＿　＿＿　<span class='text-yellow-500 text-xl'>★</span>　＿＿　いいです。（這家店不只便宜，味道也好。）",
+                options: [
+                    "だけでなく", 
+                    "<ruby>味<rt>あじ</rt></ruby>", 
+                    "も", 
+                    "<ruby>安<rt>やす</rt></ruby>い"
+                ], 
+                ans: 1, 
+                expl: `<div class="mb-2">
+                        <span class="font-bold text-indigo-700 block mb-1">【日】</span><ruby>正解<rt>せいかい</rt></ruby>の<ruby>順序<rt>じゅんじょ</rt></ruby>：この<ruby>店<rt>みせ</rt></ruby>は [<ruby>安<rt>やす</rt></ruby>い] [だけでなく] [<b class="text-red-500"><ruby>味<rt>あじ</rt></ruby></b>] [も] いいです。<br>（<ruby>文法<rt>ぶんぽう</rt></ruby>：<ruby>名詞<rt>めいし</rt></ruby>/<ruby>形容詞<rt>けいようし</rt></ruby>＋だけでなく）
+                       </div>
+                       <div class="pt-2 border-t border-slate-200">
+                        <span class="font-bold text-slate-500 block mb-1">【中】</span>正確順序：この店は [安い] [だけでなく] [<b class="text-red-500">味</b>] [も] いいです。<br>（この店は　4　1　★2　3　いいです）<br>文法：名詞/形容詞＋だけでなく。
+                       </div>`
             }
         ];
 
